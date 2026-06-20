@@ -14,11 +14,11 @@ public class Spinner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        rb.angularVelocity = spinSpeed;
     }
 
     private void FixedUpdate()
     {
-        rb.angularVelocity = spinSpeed;
+        //rb.angularVelocity = spinSpeed;
     }
 }

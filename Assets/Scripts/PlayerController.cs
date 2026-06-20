@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private bool canJump;
     [SerializeField] private Transform grabPoint;
+    [SerializeField] private float launchForce;
 
     private InputAction jump;
 
@@ -20,9 +21,11 @@ public class PlayerController : MonoBehaviour
 
     void Jump(InputAction.CallbackContext context)
     {
-        if (canJump)
+        if (canJump && grabPoint != null)
         {
-            rb.AddForce(rb.linearVelocity.normalized * 10, ForceMode2D.Impulse);
+            Vector2 launchVelocity = grabPoint.right.normalized;
+            rb.linearVelocity = Vector2.zero;
+            rb.AddForce(launchVelocity * launchForce, ForceMode2D.Impulse);
             canJump = false;
         }
     }
@@ -51,10 +54,17 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Grab Blade") && canJump)
         {
-            grabPoint = collision.gameObject.GetComponentInChildren<Transform>();
-            //transform.position = grabPoint.localToWorldMatrix.GetPosition();
-            //transform.position = grabPoint.position;
-            rb.position = grabPoint.localToWorldMatrix.GetPosition();
+            rb.linearVelocityY = 0;
+            grabPoint = collision.transform.GetChild(0);
+            transform.position = grabPoint.position;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Grab Blade") && canJump)
+        {
+            canJump = false;
         }
     }
 }
