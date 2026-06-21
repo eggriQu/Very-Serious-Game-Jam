@@ -57,6 +57,8 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocityY = 0;
             grabPoint = collision.transform.GetChild(0);
             transform.position = grabPoint.position;
+            Vector3 grabRotation = grabPoint.rotation.eulerAngles;
+            transform.rotation = Quaternion.Euler(grabRotation.x, grabRotation.y, grabRotation.z - 90);
         }
     }
 
