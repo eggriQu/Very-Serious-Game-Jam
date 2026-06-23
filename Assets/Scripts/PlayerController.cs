@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool canJump;
     [SerializeField] private Transform grabPoint;
     [SerializeField] private float launchForce;
+    [SerializeField] private Animator spriteAnim;
 
     private InputAction jump;
 
@@ -21,25 +22,33 @@ public class PlayerController : MonoBehaviour
 
     void Jump(InputAction.CallbackContext context)
     {
-        if (canJump && grabPoint != null)
+        if (!GameManager.Instance.levelStarted && canJump && grabPoint == null)
+        {
+            rb.AddForce(Vector2.up * 10, ForceMode2D.Impulse);
+            canJump = false;
+            GameManager.Instance.levelStarted = true;
+        }
+        else if (GameManager.Instance.levelStarted && canJump && grabPoint != null)
         {
             Vector2 launchVelocity = grabPoint.right.normalized;
             rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0;
             rb.AddForce(launchVelocity * launchForce, ForceMode2D.Impulse);
             canJump = false;
         }
+        spriteAnim.Play("Jump");
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        spriteAnim.Play("Idle");
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -67,6 +76,7 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("Grab Blade") && canJump)
         {
             canJump = false;
+            rb.angularVelocity = 0;
         }
     }
 }
