@@ -27,4 +27,17 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    public void PlayGame()
+    {
+        SceneManager.LoadScene("Level");
+    }
+
+    public void ExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
+    }
 }
