@@ -3,6 +3,7 @@ using UnityEngine;
 public class RoomCamera : MonoBehaviour
 {
     [SerializeField] private GameObject cameraObj;
+    [SerializeField] private Vector2 respawnPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,6 +22,8 @@ public class RoomCamera : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             cameraObj.gameObject.SetActive(true);
+            PlayerController player = other.GetComponent<PlayerController>();
+            player.SetRespawnPos(respawnPos);
         }
     }
 

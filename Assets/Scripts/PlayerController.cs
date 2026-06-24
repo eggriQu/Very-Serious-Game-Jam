@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float launchForce;
     [SerializeField] private Animator spriteAnim;
 
+    private Vector2 spawnPos;
+
     private InputAction jump;
 
     private void OnEnable()
@@ -22,13 +24,13 @@ public class PlayerController : MonoBehaviour
 
     void Jump(InputAction.CallbackContext context)
     {
-        if (!GameManager.Instance.levelStarted && canJump && grabPoint == null)
+        if (!GameManager.instance.levelStarted && canJump && grabPoint == null)
         {
             rb.AddForce(Vector2.up * 10, ForceMode2D.Impulse);
             canJump = false;
-            GameManager.Instance.levelStarted = true;
+            GameManager.instance.levelStarted = true;
         }
-        else if (GameManager.Instance.levelStarted && canJump && grabPoint != null)
+        else if (GameManager.instance.levelStarted && canJump && grabPoint != null)
         {
             Vector2 launchVelocity = grabPoint.right.normalized;
             rb.linearVelocity = Vector2.zero;
@@ -57,6 +59,11 @@ public class PlayerController : MonoBehaviour
         {
             canJump = true;
         }
+
+        if (collision.CompareTag("Death"))
+        {
+            Die();
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -78,5 +85,22 @@ public class PlayerController : MonoBehaviour
             canJump = false;
             rb.angularVelocity = 0;
         }
+    }
+
+    public void SetRespawnPos(Vector2 pos)
+    {
+        spawnPos = pos;
+    }
+
+    void Die()
+    {
+        transform.position = spawnPos;
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0;
+        rb.rotation = 0;
+        grabPoint = null;
+        GameManager.instance.levelStarted = false;
+        canJump = true;
+        spriteAnim.Play("Idle");
     }
 }
