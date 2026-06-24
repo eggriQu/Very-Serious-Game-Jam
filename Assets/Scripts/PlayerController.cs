@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,6 +10,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform grabPoint;
     [SerializeField] private float launchForce;
     [SerializeField] private Animator spriteAnim;
+
+    private bool justJumped;
 
     private Vector2 spawnPos;
 
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
             rb.angularVelocity = 0;
             rb.AddForce(launchVelocity * launchForce, ForceMode2D.Impulse);
             canJump = false;
+            StartCoroutine(KeepRotation());
         }
         spriteAnim.Play("Jump");
     }
@@ -50,7 +54,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (justJumped)
+        {
+            rb.angularVelocity = 0;
+        }
+        else
+        {
+            
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -70,6 +81,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Grab Blade") && canJump)
         {
+            rb.linearVelocityX = 0;
             rb.linearVelocityY = 0;
             grabPoint = collision.transform.GetChild(0);
             transform.position = grabPoint.position;
@@ -84,6 +96,7 @@ public class PlayerController : MonoBehaviour
         {
             canJump = false;
             rb.angularVelocity = 0;
+            StartCoroutine(KeepRotation());
         }
     }
 
@@ -94,6 +107,7 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
+        spriteAnim.Play("Idle");
         transform.position = spawnPos;
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0;
@@ -101,6 +115,12 @@ public class PlayerController : MonoBehaviour
         grabPoint = null;
         GameManager.instance.levelStarted = false;
         canJump = true;
-        spriteAnim.Play("Idle");
+    }
+
+    private IEnumerator KeepRotation()
+    {
+        justJumped = true;
+        yield return new WaitForSeconds(0.5f);
+        justJumped = false;
     }
 }
