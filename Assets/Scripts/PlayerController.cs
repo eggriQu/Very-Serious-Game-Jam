@@ -16,13 +16,18 @@ public class PlayerController : MonoBehaviour
     private Vector2 spawnPos;
 
     private InputAction jump;
+    private InputAction pause;
 
     private void OnEnable()
     {
         jump = InputSystem.actions.FindAction("Jump");
+        pause = InputSystem.actions.FindAction("Pause");
 
         jump.Enable();
         jump.performed += Jump;
+
+        pause.Enable();
+        pause.performed += PauseResume;
     }
 
     void Jump(InputAction.CallbackContext context)
@@ -45,6 +50,18 @@ public class PlayerController : MonoBehaviour
         spriteAnim.Play("Jump");
     }
 
+    void PauseResume(InputAction.CallbackContext context)
+    {
+        if (!GameManager.instance.isPaused)
+        {
+            GameManager.instance.PauseGame();
+        }
+        else
+        {
+            GameManager.instance.ResumeGame();
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -61,6 +78,18 @@ public class PlayerController : MonoBehaviour
         else
         {
             
+        }
+
+        Vector2 currentVelocity = rb.linearVelocity;
+        if (GameManager.instance.isPaused)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.gravityScale = 0;
+        }
+        else
+        {
+            rb.linearVelocity = currentVelocity;
+            rb.gravityScale = 1.4f;
         }
     }
 
@@ -79,7 +108,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Grab Blade") && canJump)
+        if (collision.CompareTag("Grab Blade") && canJump && !GameManager.instance.isPaused)
         {
             rb.linearVelocityX = 0;
             rb.linearVelocityY = 0;
@@ -87,6 +116,10 @@ public class PlayerController : MonoBehaviour
             transform.position = grabPoint.position;
             Vector3 grabRotation = grabPoint.rotation.eulerAngles;
             transform.rotation = Quaternion.Euler(grabRotation.x, grabRotation.y, grabRotation.z - 90);
+        }
+        else
+        {
+            
         }
     }
 
@@ -115,6 +148,12 @@ public class PlayerController : MonoBehaviour
         grabPoint = null;
         GameManager.instance.levelStarted = false;
         canJump = true;
+    }
+
+    public void Restart()
+    {
+        GameManager.instance.ResumeGame();
+        Die();
     }
 
     private IEnumerator KeepRotation()

@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public bool levelStarted;
+    public bool isPaused;
+
+    [SerializeField] private GameObject pauseUI;
+    [SerializeField] private Animator fadeAnim;
 
     private void Awake()
     {
@@ -31,6 +35,34 @@ public class GameManager : MonoBehaviour
     public void PlayGame()
     {
         SceneManager.LoadScene("Level");
+    }
+
+    public void PauseGame()
+    {
+        pauseUI.SetActive(true);
+        isPaused = true;
+        //Time.timeScale = 0;
+    }
+
+    public void ResumeGame()
+    {
+        pauseUI.SetActive(false);
+        isPaused = false;
+        //Time.timeScale = 1;
+    }
+
+    public void QuitButton()
+    {
+        StartCoroutine(QuitToMenu());
+    }
+
+    public IEnumerator QuitToMenu()
+    {
+        Time.timeScale = 1;
+        fadeAnim.Play("FadeOut");
+        yield return new WaitForSeconds(0.3f);
+        SceneManager.LoadScene("Menu");
+        SceneManager.UnloadSceneAsync("Level");
     }
 
     public void ExitGame()

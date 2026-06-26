@@ -14,7 +14,14 @@ public class Spinner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.angularVelocity = spinSpeed;
+        if (!GameManager.instance.isPaused)
+        {
+            rb.angularVelocity = spinSpeed;
+        }
+        else
+        {
+            rb.angularVelocity = 0;
+        }
     }
 
     private void FixedUpdate()
