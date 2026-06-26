@@ -41,14 +41,12 @@ public class GameManager : MonoBehaviour
     {
         pauseUI.SetActive(true);
         isPaused = true;
-        //Time.timeScale = 0;
     }
 
     public void ResumeGame()
     {
         pauseUI.SetActive(false);
         isPaused = false;
-        //Time.timeScale = 1;
     }
 
     public void QuitButton()
@@ -58,11 +56,9 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator QuitToMenu()
     {
-        Time.timeScale = 1;
         fadeAnim.Play("FadeOut");
         yield return new WaitForSeconds(0.3f);
         SceneManager.LoadScene("Menu");
-        SceneManager.UnloadSceneAsync("Level");
     }
 
     public void ExitGame()

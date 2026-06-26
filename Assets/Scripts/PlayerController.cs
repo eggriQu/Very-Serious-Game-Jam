@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private bool justJumped;
 
     private Vector2 spawnPos;
+    [SerializeField] private Vector2 currentVelocity;
 
     private InputAction jump;
     private InputAction pause;
@@ -54,10 +55,12 @@ public class PlayerController : MonoBehaviour
     {
         if (!GameManager.instance.isPaused)
         {
+            currentVelocity = rb.linearVelocity;
             GameManager.instance.PauseGame();
         }
         else
         {
+            rb.linearVelocity = currentVelocity;
             GameManager.instance.ResumeGame();
         }
     }
@@ -80,7 +83,6 @@ public class PlayerController : MonoBehaviour
             
         }
 
-        Vector2 currentVelocity = rb.linearVelocity;
         if (GameManager.instance.isPaused)
         {
             rb.linearVelocity = Vector2.zero;
@@ -88,7 +90,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            rb.linearVelocity = currentVelocity;
             rb.gravityScale = 1.4f;
         }
     }
