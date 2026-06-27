@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
+
+        StartCoroutine(FadeIn());
     }
 
     // Update is called once per frame
@@ -32,7 +34,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void PlayGame()
+    private void PlayGame()
     {
         SceneManager.LoadScene("Level");
     }
@@ -41,12 +43,19 @@ public class GameManager : MonoBehaviour
     {
         pauseUI.SetActive(true);
         isPaused = true;
+        Time.timeScale = 0;
     }
 
     public void ResumeGame()
     {
         pauseUI.SetActive(false);
         isPaused = false;
+        Time.timeScale = 1;
+    }
+
+    public void PlayButton()
+    {
+        StartCoroutine(PlayRoutine());
     }
 
     public void QuitButton()
@@ -54,11 +63,34 @@ public class GameManager : MonoBehaviour
         StartCoroutine(QuitToMenu());
     }
 
-    public IEnumerator QuitToMenu()
+    private IEnumerator QuitToMenu()
+    {
+        Time.timeScale = 1;
+        fadeAnim.Play("FadeOut");
+        yield return new WaitForSeconds(0.5f);
+        SceneManager.LoadScene("MainMenu");
+        SceneManager.UnloadSceneAsync("Level");
+    }
+
+    private IEnumerator PlayRoutine()
+    {
+        StartCoroutine(FadeOut());
+        yield return new WaitForSeconds(0.5f);
+        PlayGame();
+    }
+
+    IEnumerator FadeIn()
+    {
+        fadeAnim.Play("FadeIn");
+        yield return new WaitForSeconds(0.5f);
+        fadeAnim.Play("Transparent");
+    }
+
+    IEnumerator FadeOut()
     {
         fadeAnim.Play("FadeOut");
-        yield return new WaitForSeconds(0.3f);
-        SceneManager.LoadScene("Menu");
+        yield return new WaitForSeconds(0.5f);
+        fadeAnim.Play("Opaque");
     }
 
     public void ExitGame()

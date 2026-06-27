@@ -21191,7 +21191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomCamera
   cameraObj: {fileID: 1104311687}
-  respawnPos: {x: 0, y: 0}
+  respawnPos: {x: -13.517, y: -8.213}
 --- !u!4 &172640310
 Transform:
   m_ObjectHideFlags: 0
@@ -30770,7 +30770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomCamera
   cameraObj: {fileID: 641324349}
-  respawnPos: {x: 0, y: 0}
+  respawnPos: {x: -13.517, y: -8.213}
 --- !u!4 &2052779077
 Transform:
   m_ObjectHideFlags: 0
