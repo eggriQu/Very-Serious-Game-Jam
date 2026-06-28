@@ -31,6 +31,15 @@ public class PlayerController : MonoBehaviour
         pause.performed += PauseResume;
     }
 
+    private void OnDisable()
+    {
+        jump.Disable();
+        jump.performed -= Jump;
+
+        pause.Disable();
+        pause.performed -= PauseResume;
+    }
+
     void Jump(InputAction.CallbackContext context)
     {
         if (!GameManager.instance.levelStarted && canJump && grabPoint == null)
@@ -104,6 +113,11 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("Death"))
         {
             Die();
+        }
+
+        if (collision.CompareTag("Level Goal"))
+        {
+            StartCoroutine(GameManager.instance.LevelComplete());
         }
     }
 

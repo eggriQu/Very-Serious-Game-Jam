@@ -69,7 +69,13 @@ public class GameManager : MonoBehaviour
         fadeAnim.Play("FadeOut");
         yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene("MainMenu");
-        SceneManager.UnloadSceneAsync("Level");
+    }
+
+    public IEnumerator LevelComplete()
+    {
+        StartCoroutine(FadeOut());
+        yield return new WaitForSeconds(0.5f);
+        SceneManager.LoadScene("End Credits");
     }
 
     private IEnumerator PlayRoutine()
